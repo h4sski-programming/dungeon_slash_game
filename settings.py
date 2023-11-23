@@ -9,3 +9,9 @@ class Settings_dungeon_slach_game():
         self.score_surface_height = 50
         self.score_surface_text_margin = 10
         self.score_surface_text_font_size = int(self.score_surface_height - self.score_surface_text_margin / 1.5)
+
+
+class Settings_player():
+    def __init__(self):
+      self.move_speed = 100
+      self.bollet_speed = 20
