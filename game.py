@@ -115,10 +115,15 @@ class Game():
             self.enemy_list.append(generate_enemy(self.player.level))
             # reset enemy timer
             self.enemy_spawn_timer = 0
-        # enemy movement
-        for enemy in self.enemy_list:
+        #loop throu all enemy_list
+        for enemy_id, enemy in enumerate(self.enemy_list):
+            # enemy movement
             enemy.update(position = self.player.get_position_int())
             enemy.walk(self.dt)
+            if not enemy.alive:
+                self.player.exp += enemy.exp_value
+                self.enemy_list.pop(enemy_id)
+                self.player.score += 1
         
         
         # bullets update
@@ -127,7 +132,6 @@ class Game():
             self.fire_rate_timer += self.dt
         else:
             angle = self.player.get_angle(self.mouse_pos)
-            
             pos = self.player.get_position_int()
             self.bullets_list.append(Bullet(
                 x = pos[0],
@@ -148,26 +152,18 @@ class Game():
                 if bullet.get_distance(enemy.get_position_int()) < bullet.width:
                     # enemy hitted by bullet
                     bullet.detonate(pygame.time.get_ticks())
-                    enemy.get_dmg(bullet.dmg)
-                # enemy is killed
-                if not enemy.alive:
-                    self.player.exp += enemy.exp_value
-                    self.enemy_list.pop(enemy_id)
-                    self.player.score += 1
-            
+                    for enem in self.enemy_list:
+                        if bullet.get_distance(enem.get_position_int()) <= bullet.aoe:
+                            enem.get_dmg(bullet.dmg)
             # remove bullet if is too far
             if bullet.get_distance(self.player.get_position_int()) > self.player.fire_range:
                 self.bullets_list.pop(bullet_id)
-            
-            
-            # check alive of the bullet and destory it
+            # update bullet if alive and destory it if not
             if bullet.alive:
                 bullet.update(pygame.time.get_ticks())
             else:
                 self.bullets_list.pop(bullet_id)
-                
-        
-        
+
         
         # update score text
         self.score_text = f'Score = {self.player.score}'
@@ -179,7 +175,6 @@ class Game():
     def draw(self):
         # fill screen in black
         self.screen.fill("black")
-        
         
         # score surface
         self.score_surface.fill((170, 170, 170))
@@ -196,11 +191,11 @@ class Game():
         self.player_exp_text_surface = self.score_font.render(self.player_exp_text, True, (0, 0, 0))
         self.score_surface.blit(self.player_exp_text_surface, (settings.player_exp_surface_text_margin_x, settings.score_surface_text_margin))
         # exp_rect = pygame.Rect(left = 0, top = 90, width = 500, height = 8)
-        # # exp_rect = pygame.Rect(left = 0,
-        # #                        top = settings.score_surface_height - settings.player_exp_bar_height,
-        # #                        width = settings.WIDTH * self.player.exp // self.player.to_next_level_difference,
-        # #                        height = settings.player_exp_bar_height)
-        # pygame.draw.rect(self.score_surface, (255, 100, 100), exp_rect)
+        exp_rect = pygame.Rect(0,
+                               settings.score_surface_height - settings.player_exp_bar_height,
+                               settings.WIDTH * (self.player.exp - self.player.previous_level_exp) // (self.player.next_level_exp - self.player.previous_level_exp),
+                               settings.player_exp_bar_height)
+        pygame.draw.rect(self.score_surface, self.player.colour, exp_rect)
         
         # main surface
         self.main_surface.fill((0, 0, 0))

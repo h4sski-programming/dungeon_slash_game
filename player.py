@@ -16,8 +16,9 @@ class Player(Character):
                          width = 20, height = 20)
         self.score = 0
         self.exp = 0
+        self.previous_level_exp = 0
         self.next_level_exp = 10
-        self.next_level_exp_multiplicator = 1.3
+        self.next_level_exp_multiplicator = 2
         self.level = 0
         self.fire_rate = 1
         self.fire_range = 300
@@ -32,6 +33,7 @@ class Player(Character):
     
     def update(self):
         if self.exp >= self.next_level_exp:
+            self.previous_level_exp = self.next_level_exp
             self.next_level_exp *= self.next_level_exp_multiplicator
             self.level += 1
     
