@@ -14,24 +14,21 @@ class Bullet(Character):
         self.detonation_duration = 100
     
     
-    
     def detonate(self, time):
         self.detonated = True
         self.moveable = False
         self.detonation_time = time
     
+    
     def draw(self, surface):
         if self.detonated:
             pygame.draw.circle(surface, self.colour, self.get_position_int(),
                            radius = self.aoe)
-                        #    radius = self.width + (self.aoe - self.width) * self.detonation_dt // self.detonation_duration)
         else:
             self.draw_circle(surface=surface)
         
     
     def update(self, time, *args, **kwargs):
         if self.detonated:
-            # self.detonation_dt = time - self.detonation_time
-            # if time > self.detonation_time + self.detonation_duration:
-                self.alive = False
+            self.alive = False
                 

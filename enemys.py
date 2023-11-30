@@ -22,11 +22,12 @@ def generate_enemy(player_level):
 
 class Enemy_global(Character):
     def __init__(self, x, y, move_speed, hp, colour=(100, 100, 255),
-                 exp_value=1):
+                 exp_value=1, dmg=1):
         super().__init__(x=x, y=y, move_speed=move_speed, 
                          hp=hp, colour=colour, 
                          width=10, height=10)
         self.exp_value = exp_value
+        self.dmg = dmg
         # select wall when enemy spawn
         # 0=N, 1=E, 2=S, 3=W
         wall = random.randint(0, 3)
@@ -61,11 +62,11 @@ class Enemy_B(Enemy_global):
     def __init__(self):
         x, y = 0, 0
         super().__init__(x=x, y=y, move_speed=40, hp=5, exp_value=2,
-                         colour=(50, 200, 255))
+                         colour=(50, 200, 255), dmg=2)
 
 
 class Enemy_C(Enemy_global):
     def __init__(self):
         x, y = 0, 0
         super().__init__(x=x, y=y, move_speed=60, hp=8, exp_value=3,
-                         colour=(200, 50, 255))
+                         colour=(200, 50, 255), dmg=3)
